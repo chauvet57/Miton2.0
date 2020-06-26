@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prix index{% endblock %}
+
+{% block body %}
+    <h1>Prix index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom_prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prix in prixes %}
+            <tr>
+                <td>{{ prix.id }}</td>
+                <td>{{ prix.nomPrix }}</td>
+                <td>
+                    <a href="{{ path('prix_show', {'id': prix.id}) }}">show</a>
+                    <a href="{{ path('prix_edit', {'id': prix.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('prix_new') }}">Create new</a>
+{% endblock %}

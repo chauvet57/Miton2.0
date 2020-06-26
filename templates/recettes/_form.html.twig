@@ -1,0 +1,64 @@
+{{ form_start(form) }}
+   
+    {{ form_row(form.categorie) }}
+    {{ form_row(form.nomRecette) }}
+    {{ form_row(form.prix) }}
+    {{ form_row(form.difficulte) }}
+    {{ form_row(form.temps) }}
+    
+    {{ form_row(form.nombrePersonne) }}
+    {{ form_row(form.image) }}
+    {{ form_row(form.images) }}
+    {# section ingredient #}
+        <div class="container jumbotron">
+            
+
+                <ul class="tags" id="ingredient-fields-list"
+        data-prototype="{{ form_widget(form.ingredient.vars.prototype)|e }}"
+        data-widget-tags="{{ '<li></li>'|e }}"
+        data-widget-counter="{{ form.ingredient|length }}">
+    {% for ingredientField in form.ingredient %}
+        <li>
+        
+            {{ form_errors(ingredientField) }}
+            {{ form_widget(ingredientField) }}
+        </li>
+    {% endfor %}
+    </ul>
+
+    <button type="button"
+        class="add-another-collection-widget"
+        data-list-selector="#ingredient-fields-list">Ajouter un ingrédient</button>
+
+            
+        </div>    
+    {# fin section ingredient #}
+
+     {# section etapes #}
+        <div class="container jumbotron">
+            
+
+                <ul class="tags" id="etape-fields-list"
+        data-prototype="{{ form_widget(form.etape.vars.prototype)|e }}"
+        data-widget-tags="{{ '<li></li>'|e }}"
+        data-widget-counter="{{ form.etape|length }}">
+    {% for etapeField in form.etape %}
+        <li>
+        
+            {{ form_errors(etapeField) }}
+            {{ form_widget(etapeField) }}
+        </li>
+    {% endfor %}
+    </ul>
+
+    <button type="button"
+        class="add-another-collection-widget"
+        data-list-selector="#etape-fields-list">Ajouter une étape</button>
+
+            
+        </div>    
+    {# fin section etapes #}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+

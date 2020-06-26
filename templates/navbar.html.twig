@@ -1,0 +1,64 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{{ path ('recettes_index') }}">Miton.com</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item {% if current_menu is defined and current_menu == 'Home' %}active{% endif %}">
+        <a class="nav-link" href="{{ path ('recettes_index') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+{# boucle des categorie #}
+
+ {% for categorie in categories %}
+      <li class="nav-item {% if current_menu is defined and current_menu ==  categorie.nomcategorie %}active{% endif %}">
+          <a class="nav-link" href="{{ path('categories_show',{ 'id':categorie.id })}}">{{ categorie.nomcategorie}}</a>
+      </li>
+ {% endfor %}
+     
+{# boucle des categorie fin#}
+      {% if app.user %}
+          {% if app.user.isverified %}
+          
+                <li class="nav-item">
+                    <a class="nav-link">{{ app.user.pseudo }} </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Mes Recettes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('recettes_new') }}">Publier une recette</a>
+                </li>
+                <li class="nav-item"> 
+                    <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+                </li>
+            
+          {% else %}
+                <li class="nav-item">
+                    <img src="/icons/remove.png" alt="" style="width:30px">
+                </li>
+                <li class="nav-item flex-end">
+                    <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
+                </li>
+          {% endif %}
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
+            </li
+            <li class="nav-item flex-end">
+                <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
+            </li>
+    {% endif %}
+      
+
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+    {# TODO function recherche en js ? #}
+      <input class="form-control mr-sm-2" type="search" placeholder="Rechercher">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+    </form>
+  </div>
+</nav>

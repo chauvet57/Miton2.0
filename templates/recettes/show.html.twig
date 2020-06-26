@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recettes{% endblock %}
+
+{% block body %}
+{% include 'navbar.html.twig' %}
+    <div class="card col-lg-4" >
+    <img src="{{ asset('/upload/images/' ~ recette.image) }}" style="width:100px" class="card-img-top mt-3" alt="...">
+        <div class="card-body">
+            <h4 class="card-title">{{ recette.nomRecette }}</h4>   
+            <p class="card-text">Pour : {{ recette.nombrepersonne }} personnes</p>
+            {#<p class="card-text">Recette proposée par :  {{ recette.user }}</p>#}
+            <p class="card-text">Noté : <img src="/icons/note.png" style="width:25px"> {{ recette.getMoyenneNote }}/5 ({{ recette.getTotalNote }})</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Difficulté : <img src="/icons/difficulte.png" style="width:20px"> {{ recette.difficulte.nomdifficulte }}</li>
+            <li class="list-group-item">Prix : <img src="/icons/prix.png" style="width:15px"> {{ recette.prix.nomprix }}</li>
+            <li class="list-group-item">Temps : <img src="/icons/temps.png" style="width:20px"> 
+            {{ recette.getTemps.hour != 0 ?recette.getTemps.hour ~  " h " : ''}}   {{ recette.getTemps.minute }} min</li>
+        </ul>
+    </div>
+{# TODO formulaire visivle ou pas#}
+{{form_start(form)}}
+<button class="btn">{{ button_label|default('Envoyer') }}</button>
+{{form_end(form)}}
+
+{# affichage etapes commentaires #}
+   <div class="jumbotron row">
+
+ 
+        <div class="col-lg-4">
+        <h2>Etapes</h2>
+       
+        {% for key, r in recette.getEtape %}
+
+        <div class="card text-center">
+            <div class="card-header">
+                <p> Etape : {{ key + 1}}</p>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ r }}</p>
+            </div>
+        </div>    
+
+        {% endfor %}
+        </div>
+        <div class="col-lg-4">
+            <div class="column">
+                <div>
+                <h2>Ingredient</h2>
+        {% for key, i in recette.getIngredient %}
+
+            <div class="card text-center">
+
+            <div class="card-body">
+                <p class="card-text">{{ key + 1}} : {{ i.ingredient }}  {{ i.quantite }} {{ i.unite }}</p>
+            </div>
+        </div>
+
+        {% endfor %}
+                </div>
+                <div>
+                <div class="row">
+                <h2>Commentaires</h2>
+                <a type="button" class="nav-link " >Laisser un commentaire</a>
+                </div>
+                    <div style="height:150px;overflow:auto">
+
+                        {% for c in recette.getCommentaires %}
+
+                            <div style="border:groove;border-radius:10px">
+                                <span> {{ c.pseudo}}    <img src="/icons/note.png" style="width:25px">  {{ c.notes}}</span>
+                                <p>{{ c.commentaire}}</p>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+
+<div>
+
+
+
+
+    {#<a href="{{ path('recettes_index') }}">Retour</a>
+
+    <a href="{{ path('recettes_edit', {'id': recette.id}) }}">Modifier</a>
+
+    {{ include('recettes/_delete_form.html.twig') }}#}
+{% endblock %}

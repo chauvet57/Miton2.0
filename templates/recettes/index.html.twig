@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recettes index{% endblock %}
+
+{% block body %}
+{% include 'navbar.html.twig' %}
+
+<div class="jumbotron">   
+ {% for recette in recettes %}
+ <div class="card" style="width: 20rem;">
+    <img src="{{ asset('/upload/images/' ~ recette.image) }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{ recette.nomRecette }}</h5>   
+
+            <p class="card-text">Noté : {{ recette.getMoyenneNote }}/5 ({{ recette.getTotalNote }})</p>
+        </div>
+        <ul class="list-group list-group-flush">
+        
+            <a class="list-group-item nav-link" href="{{ path('recettes_show',{'id': recette.id}) }} ">Regarder la recette complète</a>
+        </ul>
+    </div>
+    
+
+        {% else %}
+            
+                <p colspan="3">Pas de recettes dsl</p>
+            
+        {% endfor %}
+
+</div>  
+  
+{% endblock %}
