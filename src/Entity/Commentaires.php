@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentairesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CommentairesRepository::class)
@@ -18,11 +19,13 @@ class Commentaires
     private $id;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="string", length=255)
      */
     private $commentaire;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="string", length=255)
      */
     private $pseudo;

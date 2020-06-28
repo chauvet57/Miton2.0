@@ -23,22 +23,42 @@ class RecettesController extends AbstractController
 
     private $security;
     private $categories;
+    private $recettes;
 
-    public function __construct(Security $security, CategoriesRepository $categorie)
+    public function __construct(Security $security, CategoriesRepository $categorie, RecettesRepository $recette)
     {
         $this->categories = $categorie;
+        $this->recettes = $recette;
         $this->security = $security;
     }
 
     /**
      * @Route("/", name="recettes_index", methods={"GET"})
      */
-    public function index(RecettesRepository $recettesRepository): Response
+    public function index(): Response
     {
+        if($this->security->getUser()){
+            if(!$this->security->getUser()->IsVerified()){
+                $this->addFlash('error','Votre compte n\'est pas vérifié, vous ne pouvez pas éditer de recette');
+            }
+        }
+        
         return $this->render('recettes/index.html.twig', [
-            'recettes' => $recettesRepository->findAll(),
+            'recettes' => $this->recettes->findAll(),
             'categories' => $this->categories->findAll()
 
+        ]);
+    }
+
+    /**
+    * @Route("/mesrecettes", name="mes_recettes", methods={"GET"})
+    */
+    public function mesrecettes(): Response
+    {
+
+        return $this->render('recettes/mes_recettes.html.twig', [
+            'recettes' => $this->recettes->findMyRec($this->getUser()->getPseudo()),
+            'categories' => $this->categories->findAll()
         ]);
     }
 
@@ -55,7 +75,7 @@ class RecettesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
              $arImg = array();
-             //recup image
+             //recup de l'image obligatoire
              $image = $form->get('image')->getData();
              $images = $form->get('images')->getData();
  
@@ -64,7 +84,7 @@ class RecettesController extends AbstractController
                  $this->getParameter('images_directory'),
                  $fichier
              );
-             //recup images
+             //recup des images complementaire non obligatoire
              foreach ($images as $img){
                      $fic = md5(uniqid()) . '.' . $img->guessExtension();
                      $img->move(
@@ -73,10 +93,7 @@ class RecettesController extends AbstractController
                      );
                      
               array_push($arImg, $fic);       
-             
-             }
-
-
+        }
 
         //recuperation de notre liste ingredient
             $dataIng = $form->get('ingredient')->getViewData();
@@ -109,7 +126,7 @@ class RecettesController extends AbstractController
             $recette->setIngredient($tabIng);
             $recette->setImage($fichier);
             $recette->setImages($arImg);
-
+            $recette->setEditor($this->getUser()->getPseudo());
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($recette);
@@ -120,6 +137,7 @@ class RecettesController extends AbstractController
 
         return $this->render('recettes/new.html.twig', [
             'recette' => $recette,
+            'categories' => $this->categories->findAll(),
             'form' => $form->createView(),
         ]);
     }
@@ -135,11 +153,10 @@ class RecettesController extends AbstractController
         $form -> handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-
+            
             $commentaire->setPseudo($this->security->getUser()->getPseudo());
             $commentaire->setRecette($recette);
            
- 
             $em = $this->getDoctrine()->getManager();
             $em->persist($commentaire);
             $em->flush();
@@ -147,7 +164,7 @@ class RecettesController extends AbstractController
             return $this->redirectToRoute('recettes_show', array(
                 'id' => $recette->getId()) );
         }
-//dd($recette);
+
         return $this->render('recettes/show.html.twig', [
             'recette' => $recette,
             'categories' => $this->categories->findAll(),
@@ -160,10 +177,16 @@ class RecettesController extends AbstractController
      */
     public function edit(Request $request, Recettes $recette): Response
     {
+    
+dd($recette);
+
         $form = $this->createForm(RecettesType::class, $recette);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('recettes_index');
@@ -171,9 +194,12 @@ class RecettesController extends AbstractController
 
         return $this->render('recettes/edit.html.twig', [
             'recette' => $recette,
+            'categories' => $this->categories->findAll(),
             'form' => $form->createView(),
         ]);
     }
+
+    
 
     /**
      * @Route("/{id}", name="recettes_delete", methods={"DELETE"})
@@ -187,5 +213,19 @@ class RecettesController extends AbstractController
         }
 
         return $this->redirectToRoute('recettes_index');
+    }
+
+    /**
+     * @Route("/categorie/{id}", name="recettes_categorie")
+     */
+    public function showCategorie( $id)
+    {
+        $this->recettes = $this->categories->find($id);
+
+        return $this->render('recettes/index.html.twig', [
+            'recettes' => $this->recettes->getRecettes(),
+            'categories' => $this->categories->findAll()
+        ]);
+ 
     }
 }

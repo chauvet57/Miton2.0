@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Recettes index{% endblock %}
+{% block title %}Mes recettes{% endblock %}
 
 {% block body %}
 {% include 'navbar.html.twig' %}
 
- 
+   
  {% for recette in recettes %}
-
 {% include 'recettes/_cardRecette.html.twig' %}
 
         {% else %}
@@ -16,4 +15,6 @@
             
         {% endfor %}
 
+
+  
 {% endblock %}

@@ -35,16 +35,25 @@ class RecettesRepository extends ServiceEntityRepository
         ;
     }
     */
+public function findMyRec($editor)
+{
+    return $this->createQueryBuilder('r')
+    ->andWhere('r.editor = :val')
+    ->setParameter('val', $editor)
+    ->getQuery()
+    ->getResult()
+;
 
-    /*
-    public function findOneBySomeField($value): ?Recettes
+}
+    
+   /* public function findOneBySomeField($value): ?Recettes
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
+            ->andWhere('r.editor = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
         ;
-    }
-    */
+    }*/
+    
 }

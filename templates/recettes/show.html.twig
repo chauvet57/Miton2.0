@@ -9,18 +9,20 @@
         <div class="card-body">
             <h4 class="card-title">{{ recette.nomRecette }}</h4>   
             <p class="card-text">Pour : {{ recette.nombrepersonne }} personnes</p>
-            {#<p class="card-text">Recette proposée par :  {{ recette.user }}</p>#}
+            <p class="card-text">Recette proposée par :  {{ recette.editor }}</p>
             <p class="card-text">Noté : <img src="/icons/note.png" style="width:25px"> {{ recette.getMoyenneNote }}/5 ({{ recette.getTotalNote }})</p>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Difficulté : <img src="/icons/difficulte.png" style="width:20px"> {{ recette.difficulte.nomdifficulte }}</li>
             <li class="list-group-item">Prix : <img src="/icons/prix.png" style="width:15px"> {{ recette.prix.nomprix }}</li>
             <li class="list-group-item">Temps : <img src="/icons/temps.png" style="width:20px"> 
-            {{ recette.getTemps.hour != 0 ?recette.getTemps.hour ~  " h " : ''}}   {{ recette.getTemps.minute }} min</li>
+            {{ recette.deserializer(recette.temps).heure != 0 ?recette.deserializer(recette.temps).heure ~  " h " : ''}}   
+            {{ recette.deserializer(recette.temps).minute }} min</li>
         </ul>
     </div>
 {# TODO formulaire visivle ou pas#}
 {{form_start(form)}}
+
 <button class="btn">{{ button_label|default('Envoyer') }}</button>
 {{form_end(form)}}
 
@@ -31,7 +33,7 @@
         <div class="col-lg-4">
         <h2>Etapes</h2>
        
-        {% for key, r in recette.getEtape %}
+        {% for key, r in recette.deserializer(recette.etape) %}
 
         <div class="card text-center">
             <div class="card-header">
@@ -48,7 +50,7 @@
             <div class="column">
                 <div>
                 <h2>Ingredient</h2>
-        {% for key, i in recette.getIngredient %}
+        {% for key, i in recette.deserializer(recette.ingredient) %}
 
             <div class="card text-center">
 
@@ -66,7 +68,7 @@
                 </div>
                     <div style="height:150px;overflow:auto">
 
-                        {% for c in recette.getCommentaires %}
+                        {% for c in recette.commentaires %}
 
                             <div style="border:groove;border-radius:10px">
                                 <span> {{ c.pseudo}}    <img src="/icons/note.png" style="width:25px">  {{ c.notes}}</span>

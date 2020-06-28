@@ -6,13 +6,22 @@
         {% block stylesheets %}
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="/js/app-clone.js"></script>
+        
+        <link rel="stylesheet" href="/css/app-master.css">
+
         {% endblock %}
     </head>
-    <body >
+    <body class="back-site">
         
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
                 {{ message }}
             </div>
         {% endfor %}
@@ -24,103 +33,22 @@
 
         {% block javascripts %}
         <script>
+        jQuery(document).ready(function () {
 
-jQuery(document).ready(function () {
-    jQuery('.add-another-collection-widget').click(function (e) {
-        var list = jQuery(jQuery(this).attr('data-list-selector'));
-        // Try to find the counter of the list or use the length of the list
-        var counter = list.data('widget-counter') || list.children().length;
+            //Annimation card
+            var countSquare = $('.square').length;
 
-        // grab the prototype template
-        var newWidget = list.attr('data-prototype');
-        // replace the "__name__" used in the id and name of the prototype
-        // with a number that's unique to your emails
-        // end name attribute looks like name="contact[emails][2]"
-        newWidget = newWidget.replace(/__name__/g, counter);
-        // Increase the counter
-        counter++;
-        // And store it, the length cannot be used if deleting widgets is allowed
-        list.data('widget-counter', counter);
+            for (i = 0; i < countSquare; i++) {
+            var firstImage = $('.square').eq([i]);
+            var secondImage = $('.square2').eq([i]);
 
-        // create a new list element and add it to the list
-        var newElem = jQuery(list.attr('data-widget-tags')).html(newWidget);
-        newElem.appendTo(list);
-        addTagForm();
-    });
+            var getImage = firstImage.attr('data-image');
+            var getImage2 = secondImage.attr('data-image');
 
-
-});
-//lien "supprimer cette balise" à chaque formulaire
-function addTagForm() {
-
-    $collectionHolder = $('ul.tags');
-
-    $collectionHolder.find('li').each(function() {
-        console.log($(this).children("button").length)
-        if(!$(this).children("button").length){
-             addTagFormDeleteLink($(this));
-        }
-    });  
-}
-
-function addTagFormDeleteLink($tagFormLi) {
-    var $removeFormButton = $('<button type="button">Supprimer</button>');
-    $tagFormLi.append($removeFormButton);
-
-    $removeFormButton.on('click', function(e) {
-       $tagFormLi.remove();
-    });
-}
-
-
-
-
-
-
-
-
-
-        //declaration variable
-            var cptEtape = 0;
-            var cptIngredient = 0;
-
-        //ajout des event du formulaire
-            let btnAjoutEtape = document.getElementById("AjoutEtape");
-            btnAjoutEtape.addEventListener("click", function () { cptEtape++, cloneEtape(cptEtape) });
-            let btnAjoutIngredient = document.getElementById("AjoutIngredient");
-            btnAjoutIngredient.addEventListener("click", function () { cptIngredient++, cloneIngredient(cptIngredient) });
-
-        //recuperation de la balise form_twig
-            let test = document.getElementById('recettes_etape');
-            test.name = 'etapes[0][etape]';
-
-        //fonction de clonage etape du champ ,set_name
-            function cloneEtape(cptEtape) {
-               
-                let divEtape = document.getElementById('etapes');
-                let clnTest = test.cloneNode(true);
-                clnTest.name = 'etapes['+ cptEtape +'][etape]';
-                etapes.appendChild(clnTest);
-
+            firstImage.css('background-image', 'url(' + getImage + ')');
+            secondImage.css('background-image', 'url(' + getImage2 + ')');
             }
-
-        //fonction de clonage ingredient du champ ,set_name
-            function cloneIngredient(cptIngredient){
-
-                let tbody = document.getElementById('ingredients');
-                let trIngredient = document.getElementById('ingredient1');
-                let cln = trIngredient.cloneNode(true);
-                cln.id = "ingredient" + cptIngredient;
-                cln.cells[1].children[0].name = 'ingredients[' + cptIngredient +'][aliment]' ;
-                cln.cells[2].children[0].name = 'ingredients[' + cptIngredient +'][precision]';
-                cln.cells[3].children[0].name = 'ingredients[' + cptIngredient +'][quantite]';
-                cln.cells[4].children[0].name = 'ingredients[' + cptIngredient +'][unite]';
-
-                ingredients.appendChild(cln);
-            }
-
-
-
+        });
         </script>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

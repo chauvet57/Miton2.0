@@ -70,10 +70,10 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
         if (!$user) {
-            // fail authentication with a custom error
+            
             throw new CustomUserMessageAuthenticationException("Verifier votre adresse email et réessayer");
         }
-
+        
         return $user;
     }
 

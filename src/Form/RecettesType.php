@@ -31,14 +31,14 @@ class RecettesType extends AbstractType
                 'class' => Difficulte::class,
                 'choice_label' => 'nomdifficulte',
                 ))
-            ->add('temps', TimeType::class)
+            ->add('temps', TempsType::class)
             ->add('nombrePersonne', IntegerType::class)
             ->add('image', FileType::class, array(
                 'label' => 'Image(JPG/PNG)',
                 'required' => false
             ))
             ->add('images', FileType::class, array(
-                'label' => 'Image(JPG/PNG)',
+                'label' => 'Images(JPG/PNG)',
                 'multiple' => true,
                 'required' => false
             ))

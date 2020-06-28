@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\DocBlock\Tag;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * 
  * @ORM\Entity(repositoryClass=RecettesRepository::class)
  */
 class Recettes
@@ -17,45 +19,54 @@ class Recettes
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"list"})
      */
     private $id;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom_recette;
 
     /**
+     * @Groups({"list"})
      * @ORM\ManyToMany(targetEntity=Categories::class, inversedBy="recettes")
      */
     private $categorie;
 
     /**
+     * @Groups({"list"})
      * @ORM\ManyToOne(targetEntity=Prix::class, inversedBy="recettes")
      */
     private $prix;
 
     /**
+     * @Groups({"list"})
      * @ORM\ManyToOne(targetEntity=Difficulte::class, inversedBy="recettes")
      */
     private $difficulte;
 
     /**
+     * @Groups({"list"})
      * @ORM\OneToMany(targetEntity=Commentaires::class, mappedBy="recette")
      */
     private $commentaires;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="string", length=255)
      */
     private $image;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="array")
      */
     private $images;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="integer")
      */
     private $nombre_personne;
@@ -66,19 +77,29 @@ class Recettes
     private $valide;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="text")
      */
     private $ingredient;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="text")
      */
     private $etape;
 
     /**
+     * @Groups({"list"})
      * @ORM\Column(type="string", length=255)
      */
     private $temps;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $editor;
+
+  
 
     public function __construct()
     {
@@ -104,6 +125,7 @@ class Recettes
     }
 
     /**
+     * 
      * @return Collection|Categories[]
      */
     public function getCategorie(): Collection
@@ -154,6 +176,7 @@ class Recettes
     }
 
     /**
+     * 
      * @return Collection|Commentaires[]
      */
     public function getCommentaires(): Collection
@@ -234,7 +257,7 @@ class Recettes
 
     public function getIngredient()
     {
-        return $this->deserializer($this->etape);
+        return $this->ingredient;
     }
 
     public function setIngredient($ingredient)
@@ -246,7 +269,7 @@ class Recettes
 
     public function getEtape()
     {
-        return $this->deserializer($this->etape);
+        return $this->etape;
     }
 
     public function setEtape($etape)
@@ -258,7 +281,7 @@ class Recettes
 
     public function getTemps()
     {
-        return $this->deserializer($this->temps);
+        return $this->temps;
     }
 
     public function setTemps( $temps)
@@ -322,4 +345,18 @@ class Recettes
     {
         $this->tags->removeElement($tag);
     }
+
+    public function getEditor(): ?string
+    {
+        return $this->editor;
+    }
+
+    public function setEditor(string $editor): self
+    {
+        $this->editor = $editor;
+
+        return $this;
+    }
+
+    
 }

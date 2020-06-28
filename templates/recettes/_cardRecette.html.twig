@@ -1,0 +1,19 @@
+<div class="centerflipcards">
+	<div class="square-flip">
+		<div class='square' data-image="{{ asset('/upload/images/' ~ recette.image) }}">
+			<div class="square-container">
+				<div class="align-center"><img src="http://titanicthemes.com/files/flipbox/kallyas2.png" class="boxshadow" alt=""></div>
+				<h2 class="textshadow">{{ recette.nomRecette }}</h2>
+				<h3 class="textshadow">{{ recette.getMoyenneNote }}/5 ({{ recette.getTotalNote }} Votes)</h3>
+			</div>
+			<div class="flip-overlay"></div>
+		</div>
+		<div class='square2' data-image="{{ asset('/upload/images/' ~ recette.image) }}">
+			<div class="square-container2">
+				<div class="align-center"></div>
+				<h2>Recette proposée par : {{ recette.editor }}</h2>
+                <a class="boxshadow" href="{{ path('recettes_show',{'id': recette.id}) }} ">Regarder la recette complète</a>
+			</div>
+			<div class="flip-overlay"></div>
+		</div>
+	</div>
