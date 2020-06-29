@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/recettes")
@@ -27,9 +31,14 @@ class RecettesController extends AbstractController
 
     public function __construct(Security $security, CategoriesRepository $categorie, RecettesRepository $recette)
     {
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
         $this->categories = $categorie;
         $this->recettes = $recette;
         $this->security = $security;
+        $this->s = $serializer; 
     }
 
     /**
@@ -39,7 +48,7 @@ class RecettesController extends AbstractController
     {
         if($this->security->getUser()){
             if(!$this->security->getUser()->IsVerified()){
-                $this->addFlash('error','Votre compte n\'est pas vérifié, vous ne pouvez pas éditer de recette');
+                $this->addFlash('error','Votre compte n\'est pas vérifié (regarder votre boite email), vous ne pouvez pas éditer de recette');
             }
         }
         
@@ -101,37 +110,48 @@ class RecettesController extends AbstractController
             for ($i=0; $i < count($dataIng) ; $i++) { 
                 $tabTemp = array();
 
-                $catIdTemp = $dataIng[$i]['categorie_aliment']->getId();
-                $catAlTemp = $dataIng[$i]['categorie_aliment']->getNomCategorieAliment();
-                $aliIdTemp = $dataIng[$i]['aliment']->getId();
-                $aliTemp = $dataIng[$i]['aliment']->getNomAliment();
-                $ingTemp = $dataIng[$i]['ingredient'];
-                $quaTemp = $dataIng[$i]['quantite'];
-                $uniTemp = $dataIng[$i]['unite']->getNomUnite();
-
-                $tabTemp['idCategorie'] = $catIdTemp;
-                $tabTemp['categorie'] = $catAlTemp;
-                $tabTemp['idAliment'] = $aliIdTemp;
-                $tabTemp['aliment'] = $aliTemp;
-                $tabTemp['ingredient'] = $ingTemp;
-                $tabTemp['quantite'] = $quaTemp;
-                $tabTemp['unite'] = $uniTemp;
+                $tabTemp['idCategorie'] = $dataIng[$i]['categorie_aliment']->getId();
+                $tabTemp['categorie'] = $dataIng[$i]['categorie_aliment']->getNomCategorieAliment();
+                $tabTemp['idAliment'] = $dataIng[$i]['aliment']->getId();
+                $tabTemp['aliment'] = $dataIng[$i]['aliment']->getNomAliment();
+                $tabTemp['ingredient'] = $dataIng[$i]['ingredient'];
+                $tabTemp['quantite'] = $dataIng[$i]['quantite'];
+                $tabTemp['unite'] = $dataIng[$i]['unite']->getNomUnite();
             
             array_push($tabIng,$tabTemp);
             }
-        
-        //mise en forme de notre recette pour la Db
-            $recette->setValide(false);
-            $recette->setTemps($form->get('temps')->getViewData());
-            $recette->setIngredient($tabIng);
-            $recette->setImage($fichier);
-            $recette->setImages($arImg);
-            $recette->setEditor($this->getUser()->getPseudo());
+
+            //recuperation des etapes
+            $dataEta = $form->get('etape')->getViewData();
+            $tabEta = array();
+            $tabTempEta = array();
+            $c = 0;
+
+            for ($i=0; $i < count($dataEta)+$c ; $i++) { 
+                $tabTempEta = array();
+                
+                    if(isset($dataEta[$i])){
+                        $c ++;
+                        $tabTempEta['etape'] = $dataEta[$i];
+                        array_push($tabEta, $tabTempEta);
+                    }
+            
+            }
+  
+            //mise en forme de notre recette pour la Db
+                $recette->setValide(false);
+                $recette->setTemps($this->s->serialize($form->get('temps')->getViewData(), 'json'));
+                $recette->setIngredient($this->s->serialize($tabIng, 'json'));
+                $recette->setImage($fichier);
+                $recette->setImages($this->s->serialize($arImg, 'json'));
+                $recette->setEtape($this->s->serialize($tabEta, 'json'));
+                $recette->setEditor($this->getUser()->getPseudo());
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($recette);
             $entityManager->flush();
 
+            $this->addFlash('success','Votre recette a bien été enregistrée, elle sera visible après validation');
             return $this->redirectToRoute('recettes_index');
         }
 
@@ -164,7 +184,7 @@ class RecettesController extends AbstractController
             return $this->redirectToRoute('recettes_show', array(
                 'id' => $recette->getId()) );
         }
-
+//dd($recette);
         return $this->render('recettes/show.html.twig', [
             'recette' => $recette,
             'categories' => $this->categories->findAll(),

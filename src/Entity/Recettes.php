@@ -219,12 +219,12 @@ class Recettes
         return $this;
     }
 
-    public function getImages(): ?array
+    public function getImages()
     {
         return $this->images;
     }
 
-    public function setImages(array $images): self
+    public function setImages($images)
     {
         $this->images = $images;
 
@@ -262,7 +262,7 @@ class Recettes
 
     public function setIngredient($ingredient)
     {
-        $this->ingredient = $this->serializer($ingredient);
+        $this->ingredient = $ingredient;
 
         return $this;
     }
@@ -274,7 +274,7 @@ class Recettes
 
     public function setEtape($etape)
     {
-        $this->etape = $this->serializer($etape);
+        $this->etape = $etape;
 
         return $this;
     }
@@ -286,7 +286,7 @@ class Recettes
 
     public function setTemps( $temps)
     {
-        $this->temps = $this->serializer($temps);
+        $this->temps = $temps;
 
         return $this;
     }
@@ -334,7 +334,7 @@ class Recettes
 
     public function deserializer($param)
     {
-        return unserialize($param);
+        return json_decode($param);
     }
 
     public function serializer($param)

@@ -40,7 +40,7 @@
                 <p> Etape : {{ key + 1}}</p>
             </div>
             <div class="card-body">
-                <p class="card-text">{{ r }}</p>
+                <p class="card-text">{{ r.etape }}</p>
             </div>
         </div>    
 
@@ -49,17 +49,18 @@
         <div class="col-lg-4">
             <div class="column">
                 <div>
-                <h2>Ingredient</h2>
-        {% for key, i in recette.deserializer(recette.ingredient) %}
-
-            <div class="card text-center">
-
-            <div class="card-body">
-                <p class="card-text">{{ key + 1}} : {{ i.ingredient }}  {{ i.quantite }} {{ i.unite }}</p>
+                <h2>Ingredients</h2>
+                <ul>
+                {% for key, i in recette.deserializer(recette.ingredient) %}
+                    <li>
+                    <p>{{ i.ingredient }}  {{ i.quantite }} {{ i.unite }}</p>    
+                    </li>
+                {% endfor %}
+                </ul>
             </div>
         </div>
 
-        {% endfor %}
+        
                 </div>
                 <div>
                 <div class="row">
