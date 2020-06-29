@@ -9,7 +9,7 @@ use App\Repository\RecettesRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
-
+ 
 
     /**
      * @Route("/api", name="api")

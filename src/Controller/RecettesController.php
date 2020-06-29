@@ -83,25 +83,25 @@ class RecettesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-             $arImg = array();
-             //recup de l'image obligatoire
-             $image = $form->get('image')->getData();
-             $images = $form->get('images')->getData();
+            $arImg = array();
+            //recup de l'image obligatoire
+            $image = $form->get('image')->getData();
+            $images = $form->get('images')->getData();
  
-             $fichier = md5(uniqid()) . '.' . $image->guessExtension();
-             $image->move(
-                 $this->getParameter('images_directory'),
-                 $fichier
-             );
-             //recup des images complementaire non obligatoire
-             foreach ($images as $img){
-                     $fic = md5(uniqid()) . '.' . $img->guessExtension();
-                     $img->move(
-                         $this->getParameter('images_directory'),
-                         $fic
-                     );
+            $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+            $image->move(
+                $this->getParameter('images_directory'),
+                $fichier
+            );
+            //recup des images complementaire non obligatoire
+            foreach ($images as $img){
+                    $fic = md5(uniqid()) . '.' . $img->guessExtension();
+                    $img->move(
+                        $this->getParameter('images_directory'),
+                        $fic
+                    );
                      
-              array_push($arImg, $fic);       
+            array_push($arImg, $fic);       
         }
 
         //recuperation de notre liste ingredient
@@ -118,7 +118,7 @@ class RecettesController extends AbstractController
                 $tabTemp['quantite'] = $dataIng[$i]['quantite'];
                 $tabTemp['unite'] = $dataIng[$i]['unite']->getNomUnite();
             
-            array_push($tabIng,$tabTemp);
+                array_push($tabIng,$tabTemp);
             }
 
             //recuperation des etapes
@@ -135,17 +135,16 @@ class RecettesController extends AbstractController
                         $tabTempEta['etape'] = $dataEta[$i];
                         array_push($tabEta, $tabTempEta);
                     }
-            
-            }
+                }
   
             //mise en forme de notre recette pour la Db
-                $recette->setValide(false);
-                $recette->setTemps($this->s->serialize($form->get('temps')->getViewData(), 'json'));
-                $recette->setIngredient($this->s->serialize($tabIng, 'json'));
-                $recette->setImage($fichier);
-                $recette->setImages($this->s->serialize($arImg, 'json'));
-                $recette->setEtape($this->s->serialize($tabEta, 'json'));
-                $recette->setEditor($this->getUser()->getPseudo());
+            $recette->setValide(false);
+            $recette->setTemps($this->s->serialize($form->get('temps')->getViewData(), 'json'));
+            $recette->setIngredient($this->s->serialize($tabIng, 'json'));
+            $recette->setImage($fichier);
+            $recette->setImages($this->s->serialize($arImg, 'json'));
+            $recette->setEtape($this->s->serialize($tabEta, 'json'));
+            $recette->setEditor($this->getUser()->getPseudo());
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($recette);

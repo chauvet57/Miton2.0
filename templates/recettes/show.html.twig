@@ -26,64 +26,64 @@
 <button class="btn">{{ button_label|default('Envoyer') }}</button>
 {{form_end(form)}}
 
-{# affichage etapes commentaires #}
-   <div class="jumbotron row">
-
- 
-        <div class="col-lg-4">
-        <h2>Etapes</h2>
-       
-        {% for key, r in recette.deserializer(recette.etape) %}
-
-        <div class="card text-center">
-            <div class="card-header">
-                <p> Etape : {{ key + 1}}</p>
+{# box etapes #}
+        <div class="boxShow">
+            <div class='box-formShow'>
+                <div class='box-show-tab'></div>
+            <div class='box-show-title'>
+                <h2>Etapes</h2>
             </div>
-            <div class="card-body">
-                <p class="card-text">{{ r.etape }}</p>
+                <div class='box-show' style="max-height: 500px;">
+                   <ul>
+                   {% for  r in recette.deserializer(recette.etape) %}
+                        <li>
+                            <p class="card-text"> {{ r.etape }}</p>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
             </div>
-        </div>    
-
-        {% endfor %}
-        </div>
-        <div class="col-lg-4">
-            <div class="column">
-                <div>
+        </div> <br>   
+{# box ingredients #}
+        <div class="boxShow">
+            <div class='box-formShow'>
+                <div class='box-show-tab'></div>
+            <div class='box-show-title'>
                 <h2>Ingredients</h2>
-                <ul>
-                {% for key, i in recette.deserializer(recette.ingredient) %}
-                    <li>
-                    <p>{{ i.ingredient }}  {{ i.quantite }} {{ i.unite }}</p>    
-                    </li>
-                {% endfor %}
-                </ul>
             </div>
-        </div>
+                <div class='box-show'>
+                    <ul>
+                        {% for key, i in recette.deserializer(recette.ingredient) %}
+                            <li>
+                                <p>{{ i.ingredient }}  {{ i.quantite }} {{ i.unite }}</p>    
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>   
+            </div>
+        </div><br>
+{# box commentaires #}    
 
         
-                </div>
-                <div>
-                <div class="row">
-                <h2>Commentaires</h2>
-                <a type="button" class="nav-link " >Laisser un commentaire</a>
-                </div>
-                    <div style="height:150px;overflow:auto">
-
+        <div class="boxShow">
+            <div class='box-formShow'>
+                <div class='box-show-tab'></div>
+            <div class='box-show-title'>
+                <img src="/icons/add-512.png" style="width: 20px;">
+                
+            </div>
+            <div class='box-show'>
+                    <ul>
                         {% for c in recette.commentaires %}
-
-                            <div style="border:groove;border-radius:10px">
-                                <span> {{ c.pseudo}}    <img src="/icons/note.png" style="width:25px">  {{ c.notes}}</span>
-                                <p>{{ c.commentaire}}</p>
-                            </div>
-
+                            <li>
+                                <span> {{ c.pseudo }}    <img src="/icons/note.png" style="width:25px">  {{ c.notes}}</span>
+                                <p>{{ c.commentaire }}</p>
+                            </li>
                         {% endfor %}
-                    </div>
-                </div>    
+                    </ul>
+                </div>   
             </div>
         </div>
-    </div>
-
-<div>
 
 
 
